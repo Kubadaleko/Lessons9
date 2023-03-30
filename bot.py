@@ -6,7 +6,7 @@ import wikipedia
 wikipedia.set_lang('ru')
 
 
-token = '6196952008:AAEPE0f7amxlSpn8M98msYDDE0BgT3CY2ok'
+token = 'Ваш token'
 
 bot = telebot.TeleBot(token)
 
