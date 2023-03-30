@@ -2,6 +2,9 @@ import telebot
 import random
 import time
 import json
+import wikipedia
+wikipedia.set_lang('ru')
+
 
 token = '6196952008:AAEPE0f7amxlSpn8M98msYDDE0BgT3CY2ok'
 
@@ -25,8 +28,9 @@ def welcome(message):
     item5 = telebot.types.KeyboardButton('Загадай число')
     item6 = telebot.types.KeyboardButton('Знак зодиака')
     item7 = telebot.types.KeyboardButton('Ответь на вопрос?')
+    item8 = telebot.types.KeyboardButton('Поискать в Википедия?')
 
-    markup.add(item1, item2, item3, item5, item6, item7)
+    markup.add(item1, item2, item3, item5, item6, item7,item8)
 
     bot.send_message(message.chat.id,
                      'Добро пожаловать! Выберите нужный вам пункт меню: ',
@@ -66,6 +70,9 @@ def answer(message):
         bot.send_message(message.chat.id, 'Ок, загадал, от 1 до 10')
         bot.send_message(message.chat.id, 'Давай отгадывай!;)')
         bot.register_next_step_handler(message, think_of)
+    elif message.text.lower() == 'поискать в википедия?': 
+        bot.send_message(message.chat.id, 'Значение какого слова будем искать?')
+        bot.register_next_step_handler(message, wiki)
 
     elif message.text.lower() == 'как дела?':
         some_list = [
@@ -233,6 +240,17 @@ def question(message):
         markup.add(item1, item2, item3, item4)
         bot.send_message(message.chat.id, 'Ваш ответ?', reply_markup=markup)
         bot.register_next_step_handler(message, game)
+
+
+
+@bot.message_handler(content_types=['text'])
+def wiki(message):
+    page = wikipedia.page(message.text.lower())
+    bot.send_message(message.chat.id, page.original_title)
+    bot.send_message(message.chat.id, page.summary)
+    bot.send_message(message.chat.id, page.url)
+    welcome(message)
+
 
 
 bot.polling(none_stop=True)
